@@ -42,7 +42,6 @@ def dashboard_principal():
 
 @app.route('/login_web', methods=['GET', 'POST'])
 def login_web():
-    try:
         if request.method == 'POST':
             username = request.form['username']
             password = request.form['password']
@@ -61,8 +60,7 @@ def login_web():
                 return redirect(url_for('dashboard'))
             else:
                 return render_template('login.html', error="Login greșit")
-    except Exception as e:
-        return f"<h3>Eroare internă: {str(e)}</h3>", 500
+
 
     return render_template('login.html')
 
