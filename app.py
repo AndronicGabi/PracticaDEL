@@ -23,7 +23,10 @@ class User(UserMixin):
         self.rol = rol
 
     def get_id(self):
-        return self.id
+        if self.id is None:
+            raise ValueError("User ID is None")
+        return str(self.id)
+
 
 
 @app.route('/client/<int:client_id>')
