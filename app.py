@@ -42,24 +42,26 @@ def dashboard_principal():
 
 @app.route('/login_web', methods=['GET', 'POST'])
 def login_web():
-        if request.method == 'POST':
-            username = request.form['username']
-            password = request.form['password']
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
 
-            conn = get_connection()
-            cursor = conn.cursor(dictionary=True)
-            cursor.execute(
-                'SELECT * FROM userweb WHERE username = %s', (username,))
-            user = cursor.fetchone()
-            cursor.close()
-            conn.close()
+        conn = get_connection()
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute(
+            'SELECT * FROM userweb WHERE username = %s', (username,))
+        user = cursor.fetchone()
+        cursor.close()
+        conn.close()
+        if user and bcrypt.check_password_hash(user['password'], password):
+            user_obj = User(user['id'], user['username'], user['rol'])
+            login_user(user_obj)
+            return redirect(url_for('dashboard'))
+        else:
+            return render_template('login.html', error="Login greșit")
+    
 
-            if user and bcrypt.check_password_hash(user['password'], password):
-                user_obj = User(user['id'], user['username'], user['rol'])
-                login_user(user_obj)
-                return redirect(url_for('dashboard'))
-            else:
-                return render_template('login.html', error="Login greșit")
+    return render_template('login.html')
 
 
     return render_template('login.html')
